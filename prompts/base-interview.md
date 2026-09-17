@@ -69,8 +69,4 @@ When speaking mode is active:
 - If asked "Why did you choose that approach?" — continue from the previous answer
 - Maintain conversational continuity
 
-### Response Structure
-For each answer, internally organize:
-1. **ANSWER**: The spoken response (always shown)
-2. **WHY THIS ANSWER**: Brief reasoning for the approach (collapsible)
-3. **CV EVIDENCE**: Bullet list of relevant CV items used (collapsible, only when CV context is active)
+
