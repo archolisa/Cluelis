@@ -415,6 +415,59 @@
                     </div>
                     <div class="settings-item" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px; margin-top: 8px;">
                         <div>
+                            <div class="settings-item-label">Continuous Interview Mode</div>
+                            <div class="settings-item-description">Automatically continue conversation without clicking mic</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="continuousMode">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <div>
+                            <div class="settings-item-label">Silence Detection</div>
+                            <div class="settings-item-description">How long to wait after you stop speaking</div>
+                        </div>
+                        <select class="input-field" id="silenceDetection">
+                            <option value="short">Short (~0.8s)</option>
+                            <option value="normal">Normal (~1.5s)</option>
+                            <option value="long">Long (~2.5s)</option>
+                        </select>
+                    </div>
+                    <div class="settings-item">
+                        <div>
+                            <div class="settings-item-label">Fast Interview Mode</div>
+                            <div class="settings-item-description">Optimize for minimal latency between turns</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="fastMode">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <div>
+                            <div class="settings-item-label">Auto Restart Listening</div>
+                            <div class="settings-item-description">Restart mic after AI response completes</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoRestart">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <div>
+                            <div class="settings-item-label">Post-response Delay</div>
+                            <div class="settings-item-description">Pause before restarting mic</div>
+                        </div>
+                        <select class="input-field" id="postResponseDelayMs">
+                            <option value="300">300ms</option>
+                            <option value="500">500ms</option>
+                            <option value="700">700ms</option>
+                            <option value="1000">1000ms</option>
+                        </select>
+                    </div>
+                    <div class="settings-item" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 16px; margin-top: 8px;">
+                        <div>
                             <div class="settings-item-label">Mock Interview Control</div>
                             <div class="settings-item-description">Start a simulated interview based on the current settings</div>
                         </div>

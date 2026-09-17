@@ -24,6 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const customInstructionsInput = document.getElementById('customInstructions');
     const cvContextEnabledToggle = document.getElementById('cvContextEnabled');
     const speakingModeToggle = document.getElementById('speakingMode');
+    const continuousModeToggle = document.getElementById('continuousMode');
+    const silenceDetectionSelect = document.getElementById('silenceDetection');
+    const fastModeToggle = document.getElementById('fastMode');
+    const autoRestartToggle = document.getElementById('autoRestart');
+    const postResponseDelayMsSelect = document.getElementById('postResponseDelayMs');
     const startMockBtn = document.getElementById('startMockBtn');
     const endMockBtn = document.getElementById('endMockBtn');
     const iconGrid = document.getElementById('iconGrid');
@@ -107,6 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (customInstructionsInput) customInstructionsInput.value = settings.customInstructions || '';
         if (cvContextEnabledToggle) cvContextEnabledToggle.checked = settings.cvContextEnabled !== false;
         if (speakingModeToggle) speakingModeToggle.checked = settings.speakingMode !== false;
+        if (continuousModeToggle) continuousModeToggle.checked = settings.continuousMode === true;
+        if (silenceDetectionSelect) silenceDetectionSelect.value = settings.silenceDetection || 'normal';
+        if (fastModeToggle) fastModeToggle.checked = settings.fastMode === true;
+        if (autoRestartToggle) autoRestartToggle.checked = settings.autoRestart !== false;
+        if (postResponseDelayMsSelect) postResponseDelayMsSelect.value = settings.postResponseDelayMs || '500';
 
         // Handle icon selection
         const selectedIcon = settings.selectedIcon || settings.appIcon;
@@ -201,6 +211,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (customInstructionsInput) settings.customInstructions = customInstructionsInput.value;
         if (cvContextEnabledToggle) settings.cvContextEnabled = cvContextEnabledToggle.checked;
         if (speakingModeToggle) settings.speakingMode = speakingModeToggle.checked;
+        if (continuousModeToggle) settings.continuousMode = continuousModeToggle.checked;
+        if (silenceDetectionSelect) settings.silenceDetection = silenceDetectionSelect.value;
+        if (fastModeToggle) settings.fastMode = fastModeToggle.checked;
+        if (autoRestartToggle) settings.autoRestart = autoRestartToggle.checked;
+        if (postResponseDelayMsSelect) settings.postResponseDelayMs = parseInt(postResponseDelayMsSelect.value, 10);
         
         window.api.send('save-settings', settings);
     };
@@ -251,7 +266,12 @@ document.addEventListener('DOMContentLoaded', () => {
         responseLengthSelect,
         customInstructionsInput,
         cvContextEnabledToggle,
-        speakingModeToggle
+        speakingModeToggle,
+        continuousModeToggle,
+        silenceDetectionSelect,
+        fastModeToggle,
+        autoRestartToggle,
+        postResponseDelayMsSelect
     ];
 
     inputs.forEach(input => {

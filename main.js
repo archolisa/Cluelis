@@ -127,6 +127,12 @@ class ApplicationController {
     this.customInstructions = "";
     this.cvContextEnabled = true;
     this.speakingMode = true;
+    this.continuousMode = false;
+    this.silenceDetection = "normal";
+    this.fastMode = false;
+    this.autoRestart = true;
+    this.postResponseDelayMs = 500;
+    this.isContinuousInterviewActive = false;
 
     // Utterance coalescing: VAD emits a transcript per natural pause, but a
     // single spoken question can still arrive as a few fragments (mid-thought
@@ -488,11 +494,13 @@ class ApplicationController {
     });
 
     ipcMain.handle("start-speech-recognition", () => {
+      this.isContinuousInterviewActive = this.continuousMode;
       speechService.startRecording();
       return speechService.getStatus();
     });
 
     ipcMain.handle("stop-speech-recognition", () => {
+      this.isContinuousInterviewActive = false;
       speechService.stopRecording();
       return speechService.getStatus();
     });
@@ -506,10 +514,12 @@ class ApplicationController {
 
     // Also handle direct send events for fallback
     ipcMain.on("start-speech-recognition", () => {
+      this.isContinuousInterviewActive = this.continuousMode;
       speechService.startRecording();
     });
 
     ipcMain.on("stop-speech-recognition", () => {
+      this.isContinuousInterviewActive = false;
       speechService.stopRecording();
     });
 
@@ -1594,6 +1604,16 @@ Keep feedback constructive, specific, and actionable.`;
         processingTime: llmResult.metadata.processingTime
       });
 
+      if (this.isContinuousInterviewActive && this.autoRestart) {
+        const delay = this.postResponseDelayMs || 500;
+        logger.info(`Continuous Mode: Restarting microphone in ${delay}ms`);
+        setTimeout(() => {
+          if (this.isContinuousInterviewActive) {
+            speechService.startRecording();
+          }
+        }, delay);
+      }
+
     } catch (error) {
       logger.error("Transcription LLM processing failed", {
         error: error.message,
@@ -1837,6 +1857,11 @@ Keep feedback constructive, specific, and actionable.`;
       customInstructions: this.customInstructions || "",
       cvContextEnabled: this.cvContextEnabled !== false,
       speakingMode: this.speakingMode !== false,
+      continuousMode: this.continuousMode === true,
+      silenceDetection: this.silenceDetection || "normal",
+      fastMode: this.fastMode === true,
+      autoRestart: this.autoRestart !== false,
+      postResponseDelayMs: this.postResponseDelayMs || 500,
       activeProfile: profileManager.getActiveProfile(),
       profiles: profileManager.getAllProfiles(),
       interviewModes: promptLoader.getInterviewModes(),
@@ -1883,6 +1908,21 @@ Keep feedback constructive, specific, and actionable.`;
       }
       if (settings.speakingMode !== undefined) {
         this.speakingMode = settings.speakingMode;
+      }
+      if (settings.continuousMode !== undefined) {
+        this.continuousMode = settings.continuousMode;
+      }
+      if (settings.silenceDetection !== undefined) {
+        this.silenceDetection = settings.silenceDetection;
+      }
+      if (settings.fastMode !== undefined) {
+        this.fastMode = settings.fastMode;
+      }
+      if (settings.autoRestart !== undefined) {
+        this.autoRestart = settings.autoRestart;
+      }
+      if (settings.postResponseDelayMs !== undefined) {
+        this.postResponseDelayMs = settings.postResponseDelayMs;
       }
       if (settings.appIcon) {
         this.appIcon = settings.appIcon;

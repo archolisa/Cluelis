@@ -483,9 +483,25 @@ class SpeechService extends EventEmitter {
       const azureConfig = config.get('speech.azure') || {};
       this.speechConfig.speechRecognitionLanguage = azureConfig.language || 'en-US';
       this.speechConfig.outputFormat = sdk.OutputFormat.Detailed;
-      this.speechConfig.setProperty(sdk.PropertyId.SpeechServiceConnection_InitialSilenceTimeoutMs, '5000');
-      this.speechConfig.setProperty(sdk.PropertyId.SpeechServiceConnection_EndSilenceTimeoutMs, '2000');
-      this.speechConfig.setProperty(sdk.PropertyId.Speech_SegmentationSilenceTimeoutMs, '2000');
+
+      const silenceMode = this._getSetting('silenceDetection') || config.get('interview.silenceDetection') || 'normal';
+      let azureInitial = '5000';
+      let azureEnd = '2000';
+      let azureSeg = '2000';
+      if (silenceMode === 'short') {
+        azureEnd = '1000';
+        azureSeg = '1000';
+      } else if (silenceMode === 'normal') {
+        azureEnd = '2000';
+        azureSeg = '2000';
+      } else if (silenceMode === 'long') {
+        azureEnd = '3500';
+        azureSeg = '3500';
+      }
+
+      this.speechConfig.setProperty(sdk.PropertyId.SpeechServiceConnection_InitialSilenceTimeoutMs, azureInitial);
+      this.speechConfig.setProperty(sdk.PropertyId.SpeechServiceConnection_EndSilenceTimeoutMs, azureEnd);
+      this.speechConfig.setProperty(sdk.PropertyId.Speech_SegmentationSilenceTimeoutMs, azureSeg);
 
       if (azureConfig.enableDictation) {
         this.speechConfig.enableDictation();
@@ -1299,7 +1315,13 @@ class SpeechService extends EventEmitter {
   }
 
   _getSilenceHangoverMs() {
-    return this._vadNumber('whisperSilenceHangoverMs', 'WHISPER_SILENCE_HANGOVER_MS', 'speech.whisper.silenceHangoverMs', 700, 200);
+    const silenceMode = this._getSetting('silenceDetection') || config.get('interview.silenceDetection') || 'normal';
+    let baseMs = 700;
+    if (silenceMode === 'short') baseMs = 800;
+    else if (silenceMode === 'normal') baseMs = 1500;
+    else if (silenceMode === 'long') baseMs = 2500;
+
+    return this._vadNumber('whisperSilenceHangoverMs', 'WHISPER_SILENCE_HANGOVER_MS', 'speech.whisper.silenceHangoverMs', baseMs, 200);
   }
 
   _getMinUtteranceMs() {

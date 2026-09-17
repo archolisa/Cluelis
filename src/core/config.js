@@ -101,6 +101,14 @@ class ConfigManager {
         hideFromDock: true,
         noAttachConsole: true,
         disguiseProcess: true
+      },
+
+      interview: {
+        continuousMode: false,
+        silenceDetection: 'normal',
+        fastMode: false,
+        autoRestart: true,
+        postResponseDelayMs: 500
       }
     };
   }
